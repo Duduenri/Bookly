@@ -33,7 +33,7 @@ export const Button: React.FC<ButtonProps> = ({
   loading = false,
   loadingText,
   spinnerPlacement = 'start',
-  colorPalette = 'cinza',
+  colorPalette = 'principal',
   size = 'md',
   variant = 'solid',
   style,
