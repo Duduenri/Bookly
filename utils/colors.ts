@@ -1,4 +1,5 @@
 export const paletasCores = {
+  principal: { solido: '#0d2f2c', texto: '#FFFFFF', contorno: '#0d2f2c' },
   cinza: { solido: '#4A5568', texto: '#FFFFFF', contorno: '#4A5568' },
   vermelho: { solido: '#E53E3E', texto: '#FFFFFF', contorno: '#E53E3E' },
   laranja: { solido: '#DD6B20', texto: '#FFFFFF', contorno: '#DD6B20' },
