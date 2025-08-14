@@ -13,6 +13,12 @@ export const paletasCores = {
 
 export type PaletaCor = keyof typeof paletasCores;
 
+// Padrão de cores específico do Bookly
+export const PadraoBookly = {
+  corPrincipal: '#0d2f2c',
+  corSecundaria: '#eeecda',
+};
+
 // Mantém a exportação em inglês para compatibilidade
 export const colorPalettes = paletasCores;
 export type ColorPalette = PaletaCor;

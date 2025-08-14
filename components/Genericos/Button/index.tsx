@@ -1,6 +1,6 @@
 import React from 'react';
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { ColorPalette, colorPalettes } from '../../ui/colors';
+import { colorPalettes } from '../../../utils/colors';
 
 export interface ButtonProps {
   children?: React.ReactNode;
@@ -33,7 +33,7 @@ export const Button: React.FC<ButtonProps> = ({
   loading = false,
   loadingText,
   spinnerPlacement = 'start',
-  colorPalette = 'gray',
+  colorPalette = 'cinza',
   size = 'md',
   variant = 'solid',
   style,
@@ -56,14 +56,14 @@ export const Button: React.FC<ButtonProps> = ({
       case 'solid':
         return {
           ...baseStyle,
-          backgroundColor: disabled ? '#E2E8F0' : colorConfig.solid,
+          backgroundColor: disabled ? '#E2E8F0' : colorConfig.solido,
         };
       case 'outline':
         return {
           ...baseStyle,
           backgroundColor: 'transparent',
           borderWidth: 1,
-          borderColor: disabled ? '#E2E8F0' : colorConfig.outline,
+          borderColor: disabled ? '#E2E8F0' : colorConfig.contorno,
         };
       case 'ghost':
         return {
@@ -73,7 +73,7 @@ export const Button: React.FC<ButtonProps> = ({
       case 'subtle':
         return {
           ...baseStyle,
-          backgroundColor: disabled ? '#F7FAFC' : `${colorConfig.solid}20`,
+          backgroundColor: disabled ? '#F7FAFC' : `${colorConfig.solido}20`,
         };
       case 'surface':
         return {
@@ -103,14 +103,14 @@ export const Button: React.FC<ButtonProps> = ({
       case 'solid':
         return {
           ...baseTextStyle,
-          color: disabled ? '#A0AEC0' : colorConfig.text,
+          color: disabled ? '#A0AEC0' : colorConfig.texto,
         };
       case 'outline':
       case 'ghost':
       case 'subtle':
         return {
           ...baseTextStyle,
-          color: disabled ? '#A0AEC0' : colorConfig.solid,
+          color: disabled ? '#A0AEC0' : colorConfig.solido,
         };
       case 'surface':
         return {
@@ -120,7 +120,7 @@ export const Button: React.FC<ButtonProps> = ({
       case 'plain':
         return {
           ...baseTextStyle,
-          color: disabled ? '#A0AEC0' : colorConfig.solid,
+          color: disabled ? '#A0AEC0' : colorConfig.solido,
         };
       default:
         return baseTextStyle;
@@ -134,7 +134,7 @@ export const Button: React.FC<ButtonProps> = ({
           {spinnerPlacement === 'start' && (
             <ActivityIndicator 
               size="small" 
-              color={variant === 'solid' ? colorConfig.text : colorConfig.solid}
+              color={variant === 'solid' ? colorConfig.texto : colorConfig.solido}
               style={styles.spinner}
             />
           )}
@@ -144,7 +144,7 @@ export const Button: React.FC<ButtonProps> = ({
           {spinnerPlacement === 'end' && (
             <ActivityIndicator 
               size="small" 
-              color={variant === 'solid' ? colorConfig.text : colorConfig.solid}
+              color={variant === 'solid' ? colorConfig.texto : colorConfig.solido}
               style={styles.spinner}
             />
           )}
