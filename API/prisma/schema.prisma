@@ -1,0 +1,278 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Profile {
+  id                     String          @id @default(cuid())
+  userId                 String          @unique
+  email                  String          @unique
+  name                   String
+  phone                  String?
+  avatar                 String?
+  bio                    String?
+  accountType            AccountType     @default(USER)
+  createdAt              DateTime        @default(now())
+  updatedAt              DateTime        @updatedAt
+  favorites              Favorite[]
+  receivedFriendRequests FriendRequest[] @relation("ReceivedFriendRequests")
+  sentFriendRequests     FriendRequest[] @relation("SentFriendRequests")
+  friendsOf              Friendship[]    @relation("FriendsOfUser")
+  friends                Friendship[]    @relation("UserFriends")
+  listings               Listing[]
+  reviews                Review[]
+  wishlist               WishlistItem[]
+
+  @@map("profiles")
+}
+
+model Bookstore {
+  id          String     @id @default(cuid())
+  name        String
+  description String?
+  logo        String?
+  phone       String?
+  email       String?
+  website     String?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  favorites   Favorite[]
+  listings    Listing[]
+  locations   Location[]
+  reviews     Review[]
+
+  @@map("bookstores")
+}
+
+model SecondhandStore {
+  id          String     @id @default(cuid())
+  name        String
+  description String?
+  logo        String?
+  phone       String?
+  email       String?
+  website     String?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  favorites   Favorite[]
+  listings    Listing[]
+  locations   Location[]
+  reviews     Review[]
+
+  @@map("secondhand_stores")
+}
+
+model Location {
+  id                String           @id @default(cuid())
+  name              String
+  address           String
+  city              String
+  state             String
+  zipCode           String?
+  country           String           @default("Brasil")
+  latitude          Float?
+  longitude         Float?
+  notes             String?
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+  bookstoreId       String?
+  secondhandStoreId String?
+  listings          Listing[]
+  bookstore         Bookstore?       @relation(fields: [bookstoreId], references: [id], onDelete: Cascade)
+  secondhandStore   SecondhandStore? @relation(fields: [secondhandStoreId], references: [id], onDelete: Cascade)
+
+  @@map("locations")
+}
+
+model Category {
+  id          String    @id @default(cuid())
+  name        String    @unique
+  description String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  books       Book[]
+  listings    Listing[]
+
+  @@map("categories")
+}
+
+model Book {
+  id            String         @id @default(cuid())
+  title         String
+  author        String
+  description   String?
+  isbn          String?        @unique
+  publisher     String?
+  publishedAt   DateTime?
+  pages         Int?
+  language      String?
+  coverImage    String?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  categoryId    String?
+  category      Category?      @relation(fields: [categoryId], references: [id])
+  favorites     Favorite[]
+  listings      Listing[]
+  reviews       Review[]
+  wishlistItems WishlistItem[]
+
+  @@map("books")
+}
+
+model Listing {
+  id                String           @id @default(cuid())
+  condition         BookCondition
+  price             Float?
+  rentalPrice       Float?
+  exchangeFor       String?
+  transactionType   TransactionType
+  status            ListingStatus    @default(ACTIVE)
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+  bookId            String
+  categoryId        String?
+  profileId         String?
+  bookstoreId       String?
+  secondhandStoreId String?
+  locationId        String
+  favorites         Favorite[]
+  images            ListingImage[]
+  book              Book             @relation(fields: [bookId], references: [id])
+  bookstore         Bookstore?       @relation(fields: [bookstoreId], references: [id], onDelete: Cascade)
+  category          Category?        @relation(fields: [categoryId], references: [id])
+  location          Location         @relation(fields: [locationId], references: [id])
+  profile           Profile?         @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  secondhandStore   SecondhandStore? @relation(fields: [secondhandStoreId], references: [id], onDelete: Cascade)
+  reviews           Review[]
+  wishlistItems     WishlistItem[]
+
+  @@map("listings")
+}
+
+model ListingImage {
+  id        String   @id @default(cuid())
+  url       String
+  alt       String?
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  listingId String
+  listing   Listing  @relation(fields: [listingId], references: [id], onDelete: Cascade)
+
+  @@map("listing_images")
+}
+
+model Review {
+  id                String           @id @default(cuid())
+  rating            Int
+  comment           String?
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+  profileId         String
+  bookId            String?
+  listingId         String?
+  bookstoreId       String?
+  secondhandStoreId String?
+  book              Book?            @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  bookstore         Bookstore?       @relation(fields: [bookstoreId], references: [id], onDelete: Cascade)
+  listing           Listing?         @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  profile           Profile          @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  secondhandStore   SecondhandStore? @relation(fields: [secondhandStoreId], references: [id], onDelete: Cascade)
+
+  @@map("reviews")
+}
+
+model Favorite {
+  id                String           @id @default(cuid())
+  createdAt         DateTime         @default(now())
+  profileId         String
+  bookId            String?
+  listingId         String?
+  bookstoreId       String?
+  secondhandStoreId String?
+  book              Book?            @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  bookstore         Bookstore?       @relation(fields: [bookstoreId], references: [id], onDelete: Cascade)
+  listing           Listing?         @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  profile           Profile          @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  secondhandStore   SecondhandStore? @relation(fields: [secondhandStoreId], references: [id], onDelete: Cascade)
+
+  @@unique([profileId, bookId])
+  @@unique([profileId, listingId])
+  @@unique([profileId, bookstoreId])
+  @@unique([profileId, secondhandStoreId])
+  @@map("favorites")
+}
+
+model WishlistItem {
+  id        String   @id @default(cuid())
+  notes     String?
+  createdAt DateTime @default(now())
+  profileId String
+  bookId    String?
+  listingId String?
+  title     String?
+  author    String?
+  isbn      String?
+  book      Book?    @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  listing   Listing? @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@map("wishlist_items")
+}
+
+model FriendRequest {
+  id         String   @id @default(cuid())
+  status     String   @default("PENDING")
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  senderId   String
+  receiverId String
+  receiver   Profile  @relation("ReceivedFriendRequests", fields: [receiverId], references: [id], onDelete: Cascade)
+  sender     Profile  @relation("SentFriendRequests", fields: [senderId], references: [id], onDelete: Cascade)
+
+  @@unique([senderId, receiverId])
+  @@map("friend_requests")
+}
+
+model Friendship {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  profileId String
+  friendId  String
+  friend    Profile  @relation("FriendsOfUser", fields: [friendId], references: [id], onDelete: Cascade)
+  profile   Profile  @relation("UserFriends", fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@unique([profileId, friendId])
+  @@map("friendships")
+}
+
+enum AccountType {
+  USER
+  BOOKSTORE
+  SECONDHAND_STORE
+}
+
+enum TransactionType {
+  SALE
+  EXCHANGE
+  RENTAL
+}
+
+enum BookCondition {
+  NEW
+  LIKE_NEW
+  GOOD
+  ACCEPTABLE
+  POOR
+}
+
+enum ListingStatus {
+  ACTIVE
+  SOLD
+  RENTED
+  INACTIVE
+}
