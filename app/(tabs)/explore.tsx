@@ -1,4 +1,5 @@
 import { Image } from 'expo-image';
+import React from 'react';
 import { Platform, StyleSheet } from 'react-native';
 
 import { Collapsible } from '@/components/Collapsible';
