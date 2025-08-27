@@ -1,8 +1,22 @@
 {
-    "mcpServers": {
-      "chakra-ui": {
-        "command": "npx",
-        "args": ["-y", "@chakra-ui/react-mcp"]
+  "mcpServers": {
+    "chakra-ui": {
+      "command": "npx",
+      "args": ["-y", "@chakra-ui/react-mcp"]
+    },
+    "supabase": {
+      "command": "cmd",
+      "args": [
+        "/c",
+        "npx",
+        "-y",
+        "@supabase/mcp-server-supabase@latest",
+        "--read-only",
+        "--project-ref=ihoqmgnnjwcqgpzsehxb"
+      ],
+      "env": {
+        "SUPABASE_ACCESS_TOKEN": "CHE5hJmgcH841E7T"
       }
     }
   }
+}
