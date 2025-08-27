@@ -1,9 +1,10 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { ReactNode, createContext, useContext, useState } from 'react';
 
 interface User {
   id: string;
   email: string;
   name: string;
+  avatar?: string;
 }
 
 interface AuthContextType {
@@ -31,6 +32,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         id: '1',
         email: email,
         name: 'Usuário Teste',
+        avatar: 'https://via.placeholder.com/50', // Adicionado avatar mockado
       };
       
       setUser(mockUser);

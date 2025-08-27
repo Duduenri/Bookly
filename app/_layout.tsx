@@ -3,7 +3,7 @@ import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native
 import { useFonts } from 'expo-font';
 import { Stack, useRouter, useSegments } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
@@ -13,8 +13,20 @@ function RootLayoutNav() {
   const { isAuthenticated } = useAuth();
   const segments = useSegments();
   const router = useRouter();
+  const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
+    // Aguardar um tick para garantir que o componente está montado
+    const timer = setTimeout(() => {
+      setIsReady(true);
+    }, 100);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    if (!isReady) return; // Não navegar até estar pronto
+
     const inAuthGroup = segments[0] === '(private)';
     
     if (isAuthenticated && !inAuthGroup) {
@@ -24,7 +36,7 @@ function RootLayoutNav() {
       // Se não está autenticado mas está na área privada, redirecionar para login
       router.replace('/(public)/login');
     }
-  }, [isAuthenticated, segments]);
+  }, [isAuthenticated, segments, isReady, router]);
 
   return (
     <Stack>

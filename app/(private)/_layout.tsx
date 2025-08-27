@@ -7,15 +7,7 @@ export default function PrivateLayout() {
       <Stack.Screen 
         name="home" 
         options={{ 
-          title: 'Home',
-          headerShown: true,
-          headerStyle: {
-            backgroundColor: '#2D3748',
-          },
-          headerTintColor: '#fff',
-          headerTitleStyle: {
-            fontWeight: 'bold',
-          },
+          headerShown: false
         }} 
       />
     </Stack>
