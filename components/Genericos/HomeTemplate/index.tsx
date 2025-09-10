@@ -2,6 +2,8 @@ import React from 'react';
 import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import BookList, { Book } from '../BookList';
 import Header from '../Header';
+import LivrariasMap, { Store } from '@/components/Genericos/Map/LivrariasMap';
+import { PadraoBookly, paletasCores } from '@/utils/colors';
 
 export interface HomeTemplateProps {
   books: Book[];
@@ -10,6 +12,7 @@ export interface HomeTemplateProps {
   onWishlistPress?: (book: Book) => void;
   onAvatarPress?: () => void;
   onTitlePress?: () => void;
+  stores?: Store[];
 }
 
 export const HomeTemplate: React.FC<HomeTemplateProps> = ({
@@ -19,6 +22,7 @@ export const HomeTemplate: React.FC<HomeTemplateProps> = ({
   onWishlistPress,
   onAvatarPress,
   onTitlePress,
+  stores = [],
 }) => {
   return (
     <SafeAreaView style={styles.container}>
@@ -35,6 +39,14 @@ export const HomeTemplate: React.FC<HomeTemplateProps> = ({
         onAvatarPress={onAvatarPress}
         onTitlePress={onTitlePress}
       />
+
+      {/* Mapa de livrarias */}
+      {stores.length > 0 && (
+        <View style={styles.mapSection}>
+          <Text style={styles.mapTitle}>Sebos e Livrarias Próximas</Text>
+          <LivrariasMap stores={stores} height={220} />
+        </View>
+      )}
 
       {/* Seção de título */}
       <View style={styles.titleSection}>
@@ -58,24 +70,38 @@ export const HomeTemplate: React.FC<HomeTemplateProps> = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F7FAFC',
+    backgroundColor: PadraoBookly.corSecundaria,
+  },
+  mapSection: {
+    paddingHorizontal: 20,
+    paddingTop: 16,
+    paddingBottom: 8,
+    backgroundColor: paletasCores.cinza.texto, // branco da paleta
+    borderBottomWidth: 1,
+    borderBottomColor: paletasCores.cinza.contorno,
+    gap: 8,
+  },
+  mapTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: paletasCores.principal.solido,
   },
   titleSection: {
     paddingHorizontal: 20,
     paddingVertical: 16,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: paletasCores.cinza.texto,
     borderBottomWidth: 1,
-    borderBottomColor: '#E2E8F0',
+    borderBottomColor: paletasCores.cinza.contorno,
   },
   mainTitle: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#2D3748',
+    color: paletasCores.principal.solido,
     marginBottom: 4,
   },
   subtitle: {
     fontSize: 14,
-    color: '#718096',
+    color: paletasCores.cinza.solido,
   },
 });
 
