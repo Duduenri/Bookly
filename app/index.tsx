@@ -1,12 +1,6 @@
-import { router } from 'expo-router';
-import { useEffect } from 'react';
+import { Redirect } from 'expo-router';
 
 export default function Index() {
-  useEffect(() => {
-    // Redirecionar automaticamente para a página de login
-    router.replace('/(public)/login');
-  }, []);
-
-  // Não renderiza nada, apenas redireciona
-  return null;
+  // Redirecionar automaticamente para a página de login
+  return <Redirect href="/(public)/login" />;
 }
