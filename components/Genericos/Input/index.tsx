@@ -29,4 +29,8 @@ export const Input: React.FC<InputProps> = ({
   );
 };
 
+// Export PasswordInput components
+export { PasswordInput, PasswordStrengthMeter } from './PasswordInput';
+export type { PasswordInputProps, PasswordVisibilityProps } from './PasswordInput';
+
 export default Input;
