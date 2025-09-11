@@ -4,9 +4,21 @@ import { Platform } from 'react-native';
 // Delegador por plataforma: carrega a implementação correta em tempo de execução
 // Isso evita que o Web importe módulos nativos do react-native-maps
 
-type Props = Record<string, any>;
+export type Store = {
+  id: string;
+  name: string;
+  latitude: number;
+  longitude: number;
+  address?: string;
+};
 
-export default function LivrariasMap(props: Props) {
+export type LivrariasMapProps = {
+  stores: Store[];
+  initialRegion?: any;
+  height?: number;
+};
+
+export default function LivrariasMap(props: LivrariasMapProps) {
   const Impl = Platform.OS === 'web'
     ? require('./LivrariasMap.web').default
     : require('./LivrariasMap.native').default;

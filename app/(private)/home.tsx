@@ -4,8 +4,10 @@ import { useAuth } from '@/src/contexts/AuthContext';
 import { useApi } from '@/src/services/api';
 import React, { useCallback, useEffect, useState } from 'react';
 import { Alert } from 'react-native';
+import { useRouter } from 'expo-router';
 
 export default function HomeScreen() {
+  const router = useRouter();
   const { user } = useAuth();
   const { getBooks, addToFavorites, addToWishlist } = useApi();
   const [books, setBooks] = useState<Book[]>([]);
@@ -131,12 +133,12 @@ export default function HomeScreen() {
   }, [user?.id, addToWishlist]);
 
   const handleAvatarPress = useCallback(() => {
-    Alert.alert('Perfil', 'Abrindo perfil do usuário...');
-  }, []);
+    router.push('/(private)/profile');
+  }, [router]);
 
   const handleTitlePress = useCallback(() => {
-    Alert.alert('Bookly', 'Navegando para a página inicial...');
-  }, []);
+    router.push('/(private)/home');
+  }, [router]);
 
   // Mostrar loading ou erro
   if (loading) {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import BookList, { Book } from '../BookList';
 import Header from '../Header';
 import LivrariasMap, { Store } from '@/components/Genericos/Map/LivrariasMap';
@@ -38,6 +38,16 @@ export const HomeTemplate: React.FC<HomeTemplateProps> = ({
         showShadow={false}
         onAvatarPress={onAvatarPress}
         onTitlePress={onTitlePress}
+        rightContent={(
+          <View style={{ flexDirection: 'row', gap: 12 }}>
+            <TouchableOpacity onPress={onTitlePress} disabled={!onTitlePress}>
+              <Text style={{ color: '#fff', fontWeight: '600' }}>Home</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={onAvatarPress} disabled={!onAvatarPress}>
+              <Text style={{ color: '#fff', fontWeight: '600' }}>Perfil</Text>
+            </TouchableOpacity>
+          </View>
+        )}
       />
 
       {/* Mapa de livrarias */}
