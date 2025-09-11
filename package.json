@@ -19,6 +19,7 @@
     "@react-navigation/bottom-tabs": "^7.3.10",
     "@react-navigation/elements": "^2.3.8",
     "@react-navigation/native": "^7.1.6",
+    "@supabase/supabase-js": "^2.57.4",
     "@vis.gl/react-google-maps": "^1.5.5",
     "expo": "~53.0.20",
     "expo-blur": "~14.1.5",
