@@ -75,6 +75,9 @@ export default function LoginScreen() {
               Entrar
             </Button>
           </View>
+           <View style={{ marginTop: 12 }}>
+              <Text style={styles.subtitle}>Ainda não possui conta? <Text style={styles.link} onPress={() => router.push('/(public)/register')}>Cadastre</Text></Text>
+           </View>
         </View>
       </View>
     </View>
@@ -93,7 +96,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   title: {
-    fontSize: 48,
+    fontSize: 36,
     fontWeight: 'bold',
     color: '#2D3748',
     marginBottom: 10,
@@ -114,5 +117,9 @@ const styles = StyleSheet.create({
   error: {
     color: '#e53e3e',
     marginBottom: 12,
+  },
+  link: {
+    color: '#3182ce',
+    textDecorationLine: 'underline',
   },
 });
