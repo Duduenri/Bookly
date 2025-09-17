@@ -37,9 +37,19 @@ export default function LoginScreen() {
     try {
       await login(email, password);
       router.replace('/(private)/home');
-    } catch (err) {
+    } catch (err: any) {
       console.error('Erro no login:', err);
-      setError('Falha ao autenticar. Verifique suas credenciais.');
+      
+      // Tratamento específico de erros do Supabase
+      if (err?.message?.includes('Invalid login credentials')) {
+        setError('Email ou senha incorretos.');
+      } else if (err?.message?.includes('email not confirmed')) {
+        setError('Por favor, confirme seu email antes de fazer login.');
+      } else if (err?.message?.includes('too many requests')) {
+        setError('Muitas tentativas. Tente novamente em alguns minutos.');
+      } else {
+        setError(err?.message || 'Falha ao autenticar. Verifique suas credenciais.');
+      }
     } finally {
       setLoading(false);
     }

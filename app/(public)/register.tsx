@@ -7,7 +7,7 @@ import { LuEye, LuEyeOff } from 'react-icons/lu';
 import { StyleSheet, Text, View } from 'react-native';
 
 export default function RegisterScreen() {
-	const { login } = useAuth();
+	const { register } = useAuth();
 	const [name, setName] = useState('');
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
@@ -48,15 +48,22 @@ export default function RegisterScreen() {
 		if (!validate()) return;
 		setLoading(true);
 		try {
-			// Simular chamada de criação de conta
-			await new Promise((resolve) => setTimeout(resolve, 1000));
-
-			// Reaproveitar login simulado para setar usuário no contexto
-			await login(email, password);
+			// Usar a função register do Supabase
+			await register(email, password, name);
 			router.replace('/(private)/home');
-		} catch (err) {
+		} catch (err: any) {
 			console.error('Erro no registro:', err);
-			setError('Falha ao criar a conta. Tente novamente.');
+			
+			// Tratamento específico de erros do Supabase
+			if (err?.message?.includes('email already registered')) {
+				setError('Este email já está cadastrado. Tente fazer login.');
+			} else if (err?.message?.includes('password')) {
+				setError('Senha muito fraca. Use pelo menos 6 caracteres.');
+			} else if (err?.message?.includes('email')) {
+				setError('Email inválido.');
+			} else {
+				setError(err?.message || 'Falha ao criar a conta. Tente novamente.');
+			}
 		} finally {
 			setLoading(false);
 		}
