@@ -1,6 +1,7 @@
 import Button from '@/components/Genericos/Button';
 import Input, { PasswordInput } from '@/components/Genericos/Input';
 import { useAuth } from '@/src/contexts/AuthContext';
+import { useToast } from '@/src/hooks/useToast';
 import { router } from 'expo-router';
 import React, { useState } from 'react';
 import { LuEye, LuEyeOff } from 'react-icons/lu';
@@ -8,26 +9,25 @@ import { StyleSheet, Text, View } from 'react-native';
 
 export default function LoginScreen() {
   const { login } = useAuth();
+  const toast = useToast();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   const validate = () => {
     if (!email.trim()) {
-      setError('Email é obrigatório');
+      toast.error('Erro de validação', 'Email é obrigatório');
       return false;
     }
     // validação simples de formato
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      setError('Email inválido');
+      toast.error('Erro de validação', 'Email inválido');
       return false;
     }
     if (!password) {
-      setError('Senha é obrigatória');
+      toast.error('Erro de validação', 'Senha é obrigatória');
       return false;
     }
-    setError(null);
     return true;
   };
 
@@ -36,19 +36,20 @@ export default function LoginScreen() {
     setLoading(true);
     try {
       await login(email, password);
+      toast.success('Sucesso!', 'Login realizado com sucesso. Bem-vindo de volta!');
       router.replace('/(private)/home');
     } catch (err: any) {
       console.error('Erro no login:', err);
       
       // Tratamento específico de erros do Supabase
       if (err?.message?.includes('Invalid login credentials')) {
-        setError('Email ou senha incorretos.');
+        toast.error('Erro no login', 'Email ou senha incorretos.');
       } else if (err?.message?.includes('email not confirmed')) {
-        setError('Por favor, confirme seu email antes de fazer login.');
+        toast.error('Erro no login', 'Por favor, confirme seu email antes de fazer login.');
       } else if (err?.message?.includes('too many requests')) {
-        setError('Muitas tentativas. Tente novamente em alguns minutos.');
+        toast.error('Erro no login', 'Muitas tentativas. Tente novamente em alguns minutos.');
       } else {
-        setError(err?.message || 'Falha ao autenticar. Verifique suas credenciais.');
+        toast.error('Erro no login', err?.message || 'Falha ao autenticar. Verifique suas credenciais.');
       }
     } finally {
       setLoading(false);
@@ -77,8 +78,6 @@ export default function LoginScreen() {
             mb={6}
             visibilityIcon={{ on: <LuEye size={18} />, off: <LuEyeOff size={18} /> }}
           />
-
-          {error ? <Text style={styles.error}>{error}</Text> : null}
 
           <View style={styles.buttonContainer}>
             <Button size="lg" variant="solid" onPress={handleLogin} loading={loading}>
@@ -123,10 +122,6 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     width: '100%',
-  },
-  error: {
-    color: '#e53e3e',
-    marginBottom: 12,
   },
   link: {
     color: '#3182ce',

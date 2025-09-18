@@ -1,9 +1,10 @@
 import { Provider } from '@/src/components/ui/provider';
+import { Toaster } from '@/src/components/ui/toaster';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import { Stack, useRouter, useSegments } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
@@ -88,6 +89,7 @@ export default function RootLayout() {
         <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
           <RootLayoutNav />
           <StatusBar style="auto" />
+          <Toaster />
         </ThemeProvider>
       </AuthProvider>
     </Provider>

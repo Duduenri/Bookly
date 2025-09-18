@@ -1,6 +1,7 @@
 import Button from '@/components/Genericos/Button';
 import Input, { PasswordInput } from '@/components/Genericos/Input';
 import { useAuth } from '@/src/contexts/AuthContext';
+import { useToast } from '@/src/hooks/useToast';
 import { router } from 'expo-router';
 import React, { useState } from 'react';
 import { LuEye, LuEyeOff } from 'react-icons/lu';
@@ -8,39 +9,38 @@ import { StyleSheet, Text, View } from 'react-native';
 
 export default function RegisterScreen() {
 	const { register } = useAuth();
+	const toast = useToast();
 	const [name, setName] = useState('');
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [confirmPassword, setConfirmPassword] = useState('');
 	const [loading, setLoading] = useState(false);
-	const [error, setError] = useState<string | null>(null);
 
 	const validate = () => {
 		if (!name.trim()) {
-			setError('Nome é obrigatório');
+			toast.error('Erro de validação', 'Nome é obrigatório');
 			return false;
 		}
 		if (!email.trim()) {
-			setError('Email é obrigatório');
+			toast.error('Erro de validação', 'Email é obrigatório');
 			return false;
 		}
 		if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-			setError('Email inválido');
+			toast.error('Erro de validação', 'Email inválido');
 			return false;
 		}
 		if (!password) {
-			setError('Senha é obrigatória');
+			toast.error('Erro de validação', 'Senha é obrigatória');
 			return false;
 		}
 		if (password.length < 6) {
-			setError('A senha deve ter pelo menos 6 caracteres');
+			toast.error('Erro de validação', 'A senha deve ter pelo menos 6 caracteres');
 			return false;
 		}
 		if (password !== confirmPassword) {
-			setError('As senhas não coincidem');
+			toast.error('Erro de validação', 'As senhas não coincidem');
 			return false;
 		}
-		setError(null);
 		return true;
 	};
 
@@ -50,19 +50,20 @@ export default function RegisterScreen() {
 		try {
 			// Usar a função register do Supabase
 			await register(email, password, name);
+			toast.success('Sucesso!', 'Conta criada com sucesso. Bem-vindo ao Bookly!');
 			router.replace('/(private)/home');
 		} catch (err: any) {
 			console.error('Erro no registro:', err);
 			
 			// Tratamento específico de erros do Supabase
 			if (err?.message?.includes('email already registered')) {
-				setError('Este email já está cadastrado. Tente fazer login.');
+				toast.error('Erro no cadastro', 'Este email já está cadastrado. Tente fazer login.');
 			} else if (err?.message?.includes('password')) {
-				setError('Senha muito fraca. Use pelo menos 6 caracteres.');
+				toast.error('Erro no cadastro', 'Senha muito fraca. Use pelo menos 6 caracteres.');
 			} else if (err?.message?.includes('email')) {
-				setError('Email inválido.');
+				toast.error('Erro no cadastro', 'Email inválido.');
 			} else {
-				setError(err?.message || 'Falha ao criar a conta. Tente novamente.');
+				toast.error('Erro no cadastro', err?.message || 'Falha ao criar a conta. Tente novamente.');
 			}
 		} finally {
 			setLoading(false);
@@ -105,8 +106,6 @@ export default function RegisterScreen() {
 						mb={6}
 						visibilityIcon={{ on: <LuEye size={18} />, off: <LuEyeOff size={18} /> }}
 					/>
-
-					{error ? <Text style={styles.error}>{error}</Text> : null}
 
 					<View style={styles.buttonContainer}>
 						<Button size="lg" variant="solid" onPress={handleRegister} loading={loading}>
@@ -152,10 +151,6 @@ const styles = StyleSheet.create({
 	},
 	buttonContainer: {
 		width: '100%',
-	},
-	error: {
-		color: '#e53e3e',
-		marginBottom: 12,
 	},
 	link: {
 		color: '#3182CE',
