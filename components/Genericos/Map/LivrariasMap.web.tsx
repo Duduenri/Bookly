@@ -1,11 +1,13 @@
-import React, { useMemo } from 'react';
-import { StyleSheet, View } from 'react-native';
-import Constants from 'expo-constants';
+import { paletasCores } from '@/utils/colors';
 import {
   APIProvider,
+  InfoWindow,
   Map,
   Marker,
 } from '@vis.gl/react-google-maps';
+import Constants from 'expo-constants';
+import React, { useMemo, useState } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
 
 export type Store = {
   id: string;
@@ -29,6 +31,8 @@ type LivrariasMapProps = {
 };
 
 export default function LivrariasMap({ stores, initialRegion, height = 300 }: LivrariasMapProps) {
+  const [selectedStoreId, setSelectedStoreId] = useState<string | null>(null);
+
   const defaultRegion: Region =
     initialRegion || {
       latitude: stores[0]?.latitude || -31.7654, // Pelotas - RS
@@ -82,9 +86,26 @@ export default function LivrariasMap({ stores, initialRegion, height = 300 }: Li
           gestureHandling="greedy"
           disableDefaultUI={false}
         >
-          {stores.map((s) => (
-            <Marker key={s.id} position={{ lat: s.latitude, lng: s.longitude }} title={s.name} />
+          {stores.map((store) => (
+            <Marker
+              key={store.id}
+              position={{ lat: store.latitude, lng: store.longitude }}
+              title={store.name}
+              onClick={() => setSelectedStoreId(store.id)}
+            />
           ))}
+
+          {selectedStoreId && stores.find(s => s.id === selectedStoreId) && (
+            <InfoWindow
+              position={{ lat: stores.find(s => s.id === selectedStoreId)!.latitude, lng: stores.find(s => s.id === selectedStoreId)!.longitude }}
+              onCloseClick={() => setSelectedStoreId(null)}
+            >
+              <View style={styles.infoWindow}>
+                <Text style={styles.infoWindowTitle}>{stores.find(s => s.id === selectedStoreId)!.name}</Text>
+                <Text style={styles.infoWindowAddress}>{stores.find(s => s.id === selectedStoreId)!.address}</Text>
+              </View>
+            </InfoWindow>
+          )}
         </Map>
       </APIProvider>
     </View>
@@ -103,5 +124,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#f5f5f5',
     borderRadius: 12,
+  },
+  infoWindow: {
+    padding: 8,
+    maxWidth: 200,
+  },
+  infoWindowTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: paletasCores.principal.solido,
+    marginBottom: 4,
+  },
+  infoWindowAddress: {
+    fontSize: 12,
+    color: paletasCores.cinza.solido,
   },
 });

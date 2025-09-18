@@ -5,11 +5,18 @@
         "args": ["-y", "@chakra-ui/react-mcp"]
       },
       "supabase": {
-        "command": "npx",
-        "args": ["-y", "@supabase/mcp-server-supabase@latest", "--read-only", "--project-ref=<project-ref>"],
+        "command": "cmd",
+        "args": [
+          "/c",
+          "npx",
+          "-y",
+          "@supabase/mcp-server-supabase",
+          "--read-only",
+          "--project-ref=<project-ref>"
+        ],
         "env": {
-          "SUPABASE_ACCESS_TOKEN": "CHE5hJmgcH841E7T"
+          "SUPABASE_ACCESS_TOKEN": "process.env.SUPABASE_ACCESS_TOKEN"
         }
       }
     }
-  }
+}

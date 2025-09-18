@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Alert, Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Alert, Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View, SafeAreaView } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { Profile, getProfileByEmail, updateProfile } from '@/src/services/profileService';
@@ -9,6 +9,8 @@ import { getMyReviews, type ReviewItem } from '@/src/services/reviewsService';
 import { getMyFavorites, type FavoriteItem } from '@/src/services/favoritesService';
 import { getMyWishlist, type WishlistItem } from '@/src/services/wishlistService';
 import { getMyFriends, type FriendItem } from '@/src/services/friendsService';
+import { Header } from '@/components/Genericos/Header';
+import { PadraoBookly, paletasCores } from '@/utils/colors';
 
 export default function ProfileScreen() {
   const router = useRouter();
@@ -163,71 +165,90 @@ export default function ProfileScreen() {
   }
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.header}>Meu Perfil</Text>
+    <SafeAreaView style={styles.screen}>
+      {/* Header no mesmo estilo da Home */}
+      <Header
+        avatarName={profile?.name || user?.name || 'Usuário'}
+        avatarSrc={profile?.avatar || user?.avatar}
+        title="Meu Perfil"
+        subtitle={user?.email}
+        avatarSize="md"
+        avatarColorPalette="blue"
+        showBorder={true}
+        showShadow={false}
+        onAvatarPress={() => {}}
+        onTitlePress={() => router.push('/(private)/home')}
+      />
 
-      <View style={styles.avatarRow}>
-        {form.avatar ? (
-          <Image source={{ uri: form.avatar }} style={styles.avatar} />
-        ) : (
-          <View style={[styles.avatar, styles.avatarPlaceholder]}>
-            <Text style={{ color: '#888' }}>Sem foto</Text>
+      <ScrollView contentContainerStyle={styles.container}>
+        {/* Card de edição do perfil */}
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>Informações</Text>
+
+          <View style={styles.avatarRow}>
+            {form.avatar ? (
+              <Image source={{ uri: form.avatar }} style={styles.avatar} />
+            ) : (
+              <View style={[styles.avatar, styles.avatarPlaceholder]}>
+                <Text style={{ color: '#888' }}>Sem foto</Text>
+              </View>
+            )}
           </View>
-        )}
-      </View>
 
-      <View style={styles.field}>
-        <Text style={styles.label}>Nome</Text>
-        <TextInput
-          style={styles.input}
-          value={form.name}
-          onChangeText={(t) => setForm((f) => ({ ...f, name: t }))}
-          placeholder="Seu nome"
-        />
-      </View>
+          <View style={styles.field}>
+            <Text style={styles.label}>Nome</Text>
+            <TextInput
+              style={styles.input}
+              value={form.name}
+              onChangeText={(t) => setForm((f) => ({ ...f, name: t }))}
+              placeholder="Seu nome"
+            />
+          </View>
 
-      <View style={styles.field}>
-        <Text style={styles.label}>Bio</Text>
-        <TextInput
-          style={[styles.input, { height: 80 }]} multiline
-          value={form.bio}
-          onChangeText={(t) => setForm((f) => ({ ...f, bio: t }))}
-          placeholder="Fale um pouco sobre você"
-        />
-      </View>
+          <View style={styles.field}>
+            <Text style={styles.label}>Bio</Text>
+            <TextInput
+              style={[styles.input, { height: 80 }]} multiline
+              value={form.bio}
+              onChangeText={(t) => setForm((f) => ({ ...f, bio: t }))}
+              placeholder="Fale um pouco sobre você"
+            />
+          </View>
 
-      <View style={styles.field}>
-        <Text style={styles.label}>Telefone</Text>
-        <TextInput
-          style={styles.input}
-          value={form.phone}
-          onChangeText={(t) => setForm((f) => ({ ...f, phone: t }))}
-          placeholder="(xx) xxxxx-xxxx"
-          keyboardType="phone-pad"
-        />
-      </View>
+          <View style={styles.field}>
+            <Text style={styles.label}>Telefone</Text>
+            <TextInput
+              style={styles.input}
+              value={form.phone}
+              onChangeText={(t) => setForm((f) => ({ ...f, phone: t }))}
+              placeholder="(xx) xxxxx-xxxx"
+              keyboardType="phone-pad"
+            />
+          </View>
 
-      <View style={styles.field}>
-        <Text style={styles.label}>URL do Avatar</Text>
-        <TextInput
-          style={styles.input}
-          value={form.avatar}
-          onChangeText={(t) => setForm((f) => ({ ...f, avatar: t }))}
-          placeholder="https://..."
-          autoCapitalize='none'
-        />
-      </View>
+          <View style={styles.field}>
+            <Text style={styles.label}>URL do Avatar</Text>
+            <TextInput
+              style={styles.input}
+              value={form.avatar}
+              onChangeText={(t) => setForm((f) => ({ ...f, avatar: t }))}
+              placeholder="https://..."
+              autoCapitalize='none'
+            />
+          </View>
 
-      <TouchableOpacity style={[styles.button, loading && { opacity: 0.6 }]} onPress={onSave} disabled={loading}>
-        <Text style={styles.buttonText}>{loading ? 'Salvando...' : 'Salvar'}</Text>
-      </TouchableOpacity>
+          <TouchableOpacity style={[styles.button, loading && { opacity: 0.6 }]} onPress={onSave} disabled={loading}>
+            <Text style={styles.buttonText}>{loading ? 'Salvando...' : 'Salvar'}</Text>
+          </TouchableOpacity>
 
-      <TouchableOpacity style={[styles.button, styles.secondaryButton]} onPress={logout}>
-        <Text style={[styles.buttonText, { color: '#333' }]}>Sair</Text>
-      </TouchableOpacity>
+          <TouchableOpacity style={[styles.button, styles.secondaryButton]} onPress={logout}>
+            <Text style={[styles.buttonText, { color: '#333' }]}>Sair</Text>
+          </TouchableOpacity>
+        </View>
 
-      {/* Sections with collapsible and pagination */}
-      <Collapsible title={`Meus Anúncios (${listingsTotal})`}>
+        {/* Sections with collapsible and pagination */}
+        <View style={styles.sectionCard}>
+          <Collapsible title={`Meus Anúncios (${listingsTotal})`}>
         {/* Filtros simples por status */}
         <View style={styles.row}>
           {(['ACTIVE','SOLD','RENTED','INACTIVE'] as ListingStatus[]).map(s => (
@@ -248,9 +269,11 @@ export default function ProfileScreen() {
           </View>
         ))}
         <Pagination total={listingsTotal} page={listingsPage} pageSize={listingsPageSize} onPrev={() => setListingsPage(p => Math.max(1, p-1))} onNext={() => setListingsPage(p => p + 1)} />
-      </Collapsible>
+          </Collapsible>
+        </View>
 
-      <Collapsible title={`Minhas Reviews (${reviewsTotal})`}>
+        <View style={styles.sectionCard}>
+          <Collapsible title={`Minhas Reviews (${reviewsTotal})`}>
         {reviews.map(rv => (
           <View key={rv.id} style={styles.itemRow}>
             <View style={{ flex: 1 }}>
@@ -262,9 +285,11 @@ export default function ProfileScreen() {
           </View>
         ))}
         <Pagination total={reviewsTotal} page={reviewsPage} pageSize={reviewsPageSize} onPrev={() => setReviewsPage(p => Math.max(1, p-1))} onNext={() => setReviewsPage(p => p + 1)} />
-      </Collapsible>
+          </Collapsible>
+        </View>
 
-      <Collapsible title={`Favoritos (${favoritesTotal})`}>
+        <View style={styles.sectionCard}>
+          <Collapsible title={`Favoritos (${favoritesTotal})`}>
         {favorites.map(fv => (
           <View key={fv.id} style={styles.itemRow}>
             <Text style={styles.itemTitle}>{fv.book?.title ?? fv.bookstore?.name ?? fv.secondhandStore?.name ?? `Listing ${fv.listing?.id ?? ''}`}</Text>
@@ -272,9 +297,11 @@ export default function ProfileScreen() {
           </View>
         ))}
         <Pagination total={favoritesTotal} page={favoritesPage} pageSize={favoritesPageSize} onPrev={() => setFavoritesPage(p => Math.max(1, p-1))} onNext={() => setFavoritesPage(p => p + 1)} />
-      </Collapsible>
+          </Collapsible>
+        </View>
 
-      <Collapsible title={`Wishlist (${wishlistTotal})`}>
+        <View style={styles.sectionCard}>
+          <Collapsible title={`Wishlist (${wishlistTotal})`}>
         {wishlist.map(w => (
           <View key={w.id} style={styles.itemRow}>
             <View style={{ flex: 1 }}>
@@ -285,9 +312,11 @@ export default function ProfileScreen() {
           </View>
         ))}
         <Pagination total={wishlistTotal} page={wishlistPage} pageSize={wishlistPageSize} onPrev={() => setWishlistPage(p => Math.max(1, p-1))} onNext={() => setWishlistPage(p => p + 1)} />
-      </Collapsible>
+          </Collapsible>
+        </View>
 
-      <Collapsible title={`Amigos (${friendsTotal})`}>
+        <View style={styles.sectionCard}>
+          <Collapsible title={`Amigos (${friendsTotal})`}>
         {friends.map(fr => (
           <View key={fr.id} style={styles.itemRow}>
             <View style={{ flex: 1 }}>
@@ -297,15 +326,22 @@ export default function ProfileScreen() {
           </View>
         ))}
         <Pagination total={friendsTotal} page={friendsPage} pageSize={friendsPageSize} onPrev={() => setFriendsPage(p => Math.max(1, p-1))} onNext={() => setFriendsPage(p => p + 1)} />
-      </Collapsible>
-    </ScrollView>
+          </Collapsible>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  screen: {
+    flex: 1,
+    backgroundColor: PadraoBookly.corSecundaria,
+  },
   container: {
     padding: 16,
     gap: 12,
+    backgroundColor: paletasCores.cinza.texto,
   },
   center: {
     flex: 1,
@@ -315,17 +351,28 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   title: {
-    fontSize: 22,
-    fontWeight: '600',
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#222',
+    textAlign: 'center',
   },
   subtitle: {
     fontSize: 14,
     color: '#666',
+    textAlign: 'center',
   },
-  header: {
-    fontSize: 24,
+  card: {
+    backgroundColor: paletasCores.cinza.texto,
+    borderBottomWidth: 1,
+    borderBottomColor: paletasCores.cinza.contorno,
+    paddingBottom: 16,
+  },
+  cardTitle: {
+    fontSize: 18,
     fontWeight: '700',
+    color: paletasCores.principal.solido,
     marginBottom: 8,
+    paddingHorizontal: 4,
   },
   avatarRow: {
     alignItems: 'center',
@@ -343,6 +390,7 @@ const styles = StyleSheet.create({
   },
   field: {
     gap: 6,
+    paddingHorizontal: 4,
   },
   label: {
     fontSize: 14,
@@ -371,6 +419,12 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     fontWeight: '600',
+  },
+  sectionCard: {
+    backgroundColor: paletasCores.cinza.texto,
+    padding: 12,
+    borderTopWidth: 1,
+    borderTopColor: paletasCores.cinza.contorno,
   },
   row: {
     flexDirection: 'row',

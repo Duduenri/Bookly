@@ -1,50 +1,99 @@
-# Welcome to your Expo app 👋
+# Bookly
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Bookly é uma plataforma inovadora para amantes de livros, livrarias e sebos. Ela oferece um espaço para conectar leitores, facilitar transações de livros e promover a leitura.
 
-## Get started
+## Funcionalidades
 
-1. Install dependencies
+- **Perfis de Usuários**:
+  - Criação de perfis com informações como nome, email, telefone, avatar e biografia.
+  - Diferentes tipos de contas: Usuário, Livraria e Sebo.
 
+- **Livrarias e Sebos**:
+  - Cadastro de livrarias e sebos com informações detalhadas, incluindo localização, descrição e contatos.
+  - Gerenciamento de listagens de livros.
+
+- **Livros**:
+  - Cadastro de livros com informações como título, autor, ISBN, editora, data de publicação, número de páginas e idioma.
+  - Classificação de livros por categorias.
+
+- **Listagens**:
+  - Criação de listagens para venda, troca ou aluguel de livros.
+  - Suporte para diferentes condições de livros (novo, usado, etc.).
+  - Gerenciamento de status das listagens (ativo, vendido, alugado, etc.).
+
+- **Localizações**:
+  - Cadastro de locais associados a livrarias e sebos.
+  - Informações detalhadas como endereço, cidade, estado, país e coordenadas geográficas.
+
+- **Favoritos e Wishlist**:
+  - Adicionar livros, listagens, livrarias e sebos aos favoritos.
+  - Gerenciamento de uma lista de desejos personalizada.
+
+- **Avaliações**:
+  - Sistema de avaliações para livros, listagens, livrarias e sebos.
+  - Classificação por estrelas e comentários.
+
+- **Amizades e Conexões**:
+  - Envio e recebimento de solicitações de amizade.
+  - Gerenciamento de uma lista de amigos.
+
+## Modelos do Banco de Dados
+
+O banco de dados é estruturado com os seguintes modelos principais:
+
+- **Profile**: Representa os usuários da plataforma.
+- **Bookstore**: Representa livrarias.
+- **SecondhandStore**: Representa sebos.
+- **Book**: Representa livros.
+- **Listing**: Representa listagens de livros.
+- **Location**: Representa localizações de livrarias e sebos.
+- **Category**: Representa categorias de livros.
+- **Review**: Representa avaliações.
+- **Favorite**: Representa itens favoritos.
+- **WishlistItem**: Representa itens na lista de desejos.
+- **FriendRequest**: Representa solicitações de amizade.
+- **Friendship**: Representa conexões de amizade.
+
+## Tecnologias Utilizadas
+
+- **Backend**:
+  - Prisma ORM para gerenciamento do banco de dados.
+  - PostgreSQL como banco de dados.
+
+- **Frontend**:
+  - React Native para interface do usuário.
+  - Chakra UI para componentes estilizados.
+
+- **Outras Ferramentas**:
+  - Supabase para autenticação e backend adicional.
+  - Google Maps API para integração de mapas.
+
+## Como Rodar o Projeto
+
+1. Clone o repositório:
+   ```bash
+   git clone https://github.com/Duduenri/Bookly.git
+   ```
+
+2. Instale as dependências:
    ```bash
    npm install
    ```
 
-2. Start the app
+3. Configure as variáveis de ambiente:
+   - Crie um arquivo `.env` baseado no `.env.example`.
+   - Adicione as chaves necessárias, como `SUPABASE_URL`, `SUPABASE_ANON_KEY` e `SUPABASE_ACCESS_TOKEN`.
 
+4. Execute as migrações do banco de dados:
    ```bash
-   npx expo start
+   npx prisma migrate dev
    ```
 
-In the output, you'll find options to open the app in a
+5. Inicie o servidor:
+   ```bash
+   npm start
+   ```
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## Contribuição
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+Contribuições são bem-vindas! Sinta-se à vontade para abrir issues e enviar pull requests.
