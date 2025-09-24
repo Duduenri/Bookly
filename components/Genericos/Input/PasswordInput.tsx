@@ -1,20 +1,20 @@
 "use client"
 
 import type {
-    ButtonProps,
-    GroupProps,
-    InputProps,
-    StackProps,
+  ButtonProps,
+  GroupProps,
+  InputProps,
+  StackProps,
 } from "@chakra-ui/react"
 import {
-    Box,
-    HStack,
-    IconButton,
-    Input,
-    InputGroup,
-    Stack,
-    mergeRefs,
-    useControllableState,
+  Box,
+  HStack,
+  IconButton,
+  Input,
+  InputGroup,
+  Stack,
+  mergeRefs,
+  useControllableState,
 } from "@chakra-ui/react"
 import * as React from "react"
 import { LuEye, LuEyeOff } from "react-icons/lu"
@@ -97,12 +97,15 @@ const VisibilityTrigger = React.forwardRef<HTMLButtonElement, ButtonProps>(
       <IconButton
         tabIndex={-1}
         ref={ref}
-        me="-2"
-        aspectRatio="square"
+        me="-1"
         size="sm"
         variant="ghost"
-        height="calc(100% - {spacing.2})"
         aria-label="Toggle password visibility"
+        p={1}
+        minW="auto"
+        w={8}
+        h={8}
+        transform="translateY(-10px)"
         {...props}
       />
     )
