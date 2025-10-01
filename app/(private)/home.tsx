@@ -1,10 +1,10 @@
 import { Book } from '@/components/Genericos/BookList';
-import HomeTemplate from '@/components/Genericos/HomeTemplate';
+import { HomeTemplate } from '@/components/Genericos/HomeTemplate';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { useApi } from '@/src/services/api';
+import { useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useState } from 'react';
 import { Alert } from 'react-native';
-import { useRouter } from 'expo-router';
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -92,7 +92,7 @@ export default function HomeScreen() {
     };
 
     fetchBooks();
-  }, []); // Removida a dependência getBooks para evitar loop infinito
+  }, [getBooks]);
 
   const handleBookPress = useCallback((book: Book) => {
     Alert.alert(
@@ -140,6 +140,10 @@ export default function HomeScreen() {
     router.push('/(private)/home');
   }, [router]);
 
+  const handleAddBookPress = useCallback(() => {
+    router.push('/(private)/add-book');
+  }, [router]);
+
   // Mostrar loading ou erro
   if (loading) {
     return (
@@ -151,6 +155,7 @@ export default function HomeScreen() {
         onWishlistPress={handleWishlistPress}
         onAvatarPress={handleAvatarPress}
         onTitlePress={handleTitlePress}
+        onAddBookPress={handleAddBookPress}
       />
     );
   }
@@ -168,6 +173,7 @@ export default function HomeScreen() {
       onWishlistPress={handleWishlistPress}
       onAvatarPress={handleAvatarPress}
       onTitlePress={handleTitlePress}
+      onAddBookPress={handleAddBookPress}
     />
   );
 }
