@@ -1,9 +1,10 @@
-import React from 'react';
-import { SafeAreaView, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
-import BookList, { Book } from '../BookList';
-import Header from '../Header';
 import LivrariasMap, { Store } from '@/components/Genericos/Map/LivrariasMap';
 import { PadraoBookly, paletasCores } from '@/utils/colors';
+import { Ionicons } from '@expo/vector-icons';
+import React from 'react';
+import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Book, BookList } from '../BookList';
+import { Header } from '../Header';
 
 export interface HomeTemplateProps {
   books: Book[];
@@ -12,6 +13,7 @@ export interface HomeTemplateProps {
   onWishlistPress?: (book: Book) => void;
   onAvatarPress?: () => void;
   onTitlePress?: () => void;
+  onAddBookPress?: () => void;
   stores?: Store[];
 }
 
@@ -22,6 +24,7 @@ export const HomeTemplate: React.FC<HomeTemplateProps> = ({
   onWishlistPress,
   onAvatarPress,
   onTitlePress,
+  onAddBookPress,
   stores = [],
 }) => {
   return (
@@ -39,7 +42,23 @@ export const HomeTemplate: React.FC<HomeTemplateProps> = ({
         onAvatarPress={onAvatarPress}
         onTitlePress={onTitlePress}
         rightContent={(
-          <View style={{ flexDirection: 'row', gap: 12 }}>
+          <View style={{ flexDirection: 'row', gap: 12, alignItems: 'center' }}>
+            <TouchableOpacity 
+              onPress={onAddBookPress} 
+              disabled={!onAddBookPress}
+              style={{
+                backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                paddingHorizontal: 12,
+                paddingVertical: 6,
+                borderRadius: 16,
+                flexDirection: 'row',
+                alignItems: 'center',
+                gap: 4,
+              }}
+            >
+              <Ionicons name="add" size={16} color="#fff" />
+              <Text style={{ color: '#fff', fontWeight: '600', fontSize: 12 }}>Livro</Text>
+            </TouchableOpacity>
             <TouchableOpacity onPress={onTitlePress} disabled={!onTitlePress}>
               <Text style={{ color: '#fff', fontWeight: '600' }}>Home</Text>
             </TouchableOpacity>
@@ -73,6 +92,17 @@ export const HomeTemplate: React.FC<HomeTemplateProps> = ({
         onFavoritePress={onFavoritePress}
         onWishlistPress={onWishlistPress}
       />
+
+      {/* Botão flutuante para adicionar livro */}
+      {onAddBookPress && (
+        <TouchableOpacity
+          style={styles.floatingButton}
+          onPress={onAddBookPress}
+          activeOpacity={0.8}
+        >
+          <Ionicons name="add" size={28} color="#fff" />
+        </TouchableOpacity>
+      )}
     </SafeAreaView>
   );
 };
@@ -112,6 +142,25 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: 14,
     color: paletasCores.cinza.solido,
+  },
+  floatingButton: {
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: paletasCores.principal.solido,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 4.65,
+    elevation: 8,
   },
 });
 
