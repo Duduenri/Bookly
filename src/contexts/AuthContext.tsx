@@ -1,85 +1,97 @@
-import React, { ReactNode, createContext, useContext, useEffect, useMemo, useState } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { supabase } from '@/src/services/supabase';
+import React, { ReactNode, createContext, useContext, useEffect, useState } from 'react';
 
 interface User {
   id: string;
-  email: string;
-  name: string;
-  avatar?: string;
+  email: string | null;
+  name?: string | null;
+  avatar?: string | null;
 }
 
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<void>;
-  logout: () => void;
-  loading: boolean;
+  register: (email: string, password: string, name?: string) => Promise<void>;
+  logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  const STORAGE_KEY = '@bookly/auth_user';
 
   const isAuthenticated = !!user;
 
-  // Carrega sessão persistida ao iniciar
   useEffect(() => {
-    const loadPersistedUser = async () => {
-      try {
-        const raw = await AsyncStorage.getItem(STORAGE_KEY);
-        if (raw) {
-          const parsed: User = JSON.parse(raw);
-          setUser(parsed);
-        }
-      } catch (error) {
-        console.warn('Falha ao carregar sessão persistida', error);
-      } finally {
-        setLoading(false);
+    let mounted = true;
+
+    const getSession = async () => {
+      const { data, error } = await supabase.auth.getSession();
+      if (error) {
+        console.error('Error getting session:', error);
+        return;
+      }
+      if (!mounted) return;
+      const session = data.session;
+      if (session?.user) {
+        const u = session.user;
+        setUser({ id: u.id, email: u.email, name: u.user_metadata?.name ?? null, avatar: u.user_metadata?.avatar ?? null });
       }
     };
-    loadPersistedUser();
+
+    getSession();
+
+    const { data: listener } = supabase.auth.onAuthStateChange((event: any, session: any) => {
+      if (session?.user) {
+        const u = session.user;
+        setUser({ id: u.id, email: u.email, name: u.user_metadata?.name ?? null, avatar: u.user_metadata?.avatar ?? null });
+      } else {
+        setUser(null);
+      }
+    });
+
+    return () => {
+      mounted = false;
+      listener?.subscription.unsubscribe();
+    };
   }, []);
 
   const login = async (email: string, password: string) => {
-    // Simular login - em produção, aqui seria a chamada para a API
-    try {
-      // Simular delay de API
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Usuário mockado para teste
-      const mockUser: User = {
-        id: '1',
-        email: email,
-        name: 'Usuário Teste',
-        avatar: 'https://via.placeholder.com/50', // Adicionado avatar mockado
-      };
-      
-      setUser(mockUser);
-      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(mockUser));
-    } catch (error) {
-      console.error('Erro no login:', error);
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) {
+      console.error('Login error:', error);
       throw error;
+    }
+    if (data.user) {
+      setUser({ id: data.user.id, email: data.user.email, name: data.user.user_metadata?.name ?? null, avatar: data.user.user_metadata?.avatar ?? null });
     }
   };
 
-  const logout = () => {
-    setUser(null);
-    AsyncStorage.removeItem(STORAGE_KEY).catch(() => {
-      // noop
-    });
+  const register = async (email: string, password: string, name?: string) => {
+    const { data, error } = await supabase.auth.signUp({ email, password, options: { data: { name } } });
+    if (error) {
+      console.error('Register error:', error);
+      throw error;
+    }
+    // user might be nil until email confirmation depending on Supabase settings
+    if (data.user) {
+      setUser({ id: data.user.id, email: data.user.email, name: data.user.user_metadata?.name ?? name ?? null, avatar: data.user.user_metadata?.avatar ?? null });
+    }
   };
 
-  const value: AuthContextType = useMemo(() => ({
+  const logout = async () => {
+    await supabase.auth.signOut();
+    setUser(null);
+  };
+
+  const value: AuthContextType = {
     user,
     isAuthenticated,
     login,
+    register,
     logout,
-    loading,
-  }), [user, isAuthenticated, loading]);
+  };
 
   return (
     <AuthContext.Provider value={value}>

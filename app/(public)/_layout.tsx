@@ -12,6 +12,14 @@ export default function PublicLayout() {
         }} 
       />
       
+      <Stack.Screen 
+        name="register" 
+        options={{ 
+          title: 'Cadastro',
+          headerShown: false 
+        }} 
+      />
+      
       {/* Rota padrão da área pública */}
       <Stack.Screen 
         name="index" 
