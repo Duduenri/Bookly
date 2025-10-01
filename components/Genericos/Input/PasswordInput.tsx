@@ -1,7 +1,7 @@
 "use client"
 
-import * as React from "react"
-import { Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import * as React from "react";
+import { Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 // Importação condicional do Chakra UI apenas para web
 let ChakraComponents: any = {};
