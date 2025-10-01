@@ -1,5 +1,19 @@
-import { Tooltip as ChakraTooltip, Portal } from "@chakra-ui/react"
-import * as React from "react"
+import * as React from "react";
+import { Platform } from "react-native";
+
+// Importação condicional do Chakra UI apenas para web
+let ChakraTooltip: any = null;
+let Portal: any = null;
+
+if (Platform.OS === 'web') {
+  try {
+    const chakraUI = require("@chakra-ui/react");
+    ChakraTooltip = chakraUI.Tooltip;
+    Portal = chakraUI.Portal;
+  } catch (error) {
+    console.log('Chakra UI não disponível para tooltip');
+  }
+}
 
 export interface TooltipProps {
   children?: React.ReactNode
@@ -27,6 +41,11 @@ export const Tooltip = React.forwardRef<HTMLDivElement, TooltipProps>(
     } = props
 
     if (disabled) return children
+
+    // Se não estiver na web ou Chakra UI não disponível, apenas retornar children
+    if (Platform.OS !== 'web' || !ChakraTooltip) {
+      return children;
+    }
 
     return (
       <ChakraTooltip.Root {...rest}>

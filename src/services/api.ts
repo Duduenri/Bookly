@@ -87,14 +87,87 @@ class ApiClient {
 // Instância global da API
 export const apiClient = new ApiClient(API_BASE_URL);
 
-// Hook personalizado para usar a API
+// Importar supabase para fallback
+import { supabase } from './supabase';
+
+// Hook personalizado para usar a API com fallback para Supabase
 export const useApi = () => {
+  // Função para buscar livros com fallback
+  const getBooks = async (): Promise<ApiBook[]> => {
+    try {
+      // Tentar buscar da API local primeiro
+      return await apiClient.getBooks();
+    } catch (error) {
+      console.log('API local não disponível, usando Supabase...');
+      
+      // Fallback: buscar do Supabase
+      const { data, error: supabaseError } = await supabase
+        .from('books')
+        .select('*')
+        .limit(20);
+      
+      if (supabaseError) {
+        console.error('Erro no Supabase:', supabaseError);
+        throw supabaseError;
+      }
+      
+      // Converter dados do Supabase para o formato da API
+      return (data || []).map((item: any): ApiBook => ({
+        id: item.id,
+        title: item.title || 'Título não informado',
+        author: item.author || 'Autor não informado',
+        description: item.description,
+        coverImage: item.coverImage,
+        price: item.price,
+        condition: item.condition || 'GOOD',
+        transactionType: item.transactionType || 'SALE',
+        location: item.location || 'Local não informado',
+        sellerName: item.sellerName || 'Vendedor',
+        sellerAvatar: item.sellerAvatar,
+      }));
+    }
+  };
+
+  // Função para adicionar aos favoritos com fallback
+  const addToFavorites = async (bookId: string, userId: string): Promise<void> => {
+    try {
+      await apiClient.addToFavorites(bookId, userId);
+    } catch (error) {
+      console.log('API local não disponível, usando Supabase...');
+      
+      const { error: supabaseError } = await supabase
+        .from('favorites')
+        .insert({ bookId, profileId: userId });
+      
+      if (supabaseError) {
+        throw supabaseError;
+      }
+    }
+  };
+
+  // Função para adicionar à wishlist com fallback
+  const addToWishlist = async (bookId: string, userId: string): Promise<void> => {
+    try {
+      await apiClient.addToWishlist(bookId, userId);
+    } catch (error) {
+      console.log('API local não disponível, usando Supabase...');
+      
+      const { error: supabaseError } = await supabase
+        .from('wishlists')
+        .insert({ bookId, profileId: userId });
+      
+      if (supabaseError) {
+        throw supabaseError;
+      }
+    }
+  };
+
   return {
-    getBooks: apiClient.getBooks.bind(apiClient),
+    getBooks,
     getBooksByCategory: apiClient.getBooksByCategory.bind(apiClient),
     searchBooks: apiClient.searchBooks.bind(apiClient),
     getBookById: apiClient.getBookById.bind(apiClient),
-    addToFavorites: apiClient.addToFavorites.bind(apiClient),
-    addToWishlist: apiClient.addToWishlist.bind(apiClient),
+    addToFavorites,
+    addToWishlist,
   };
 };

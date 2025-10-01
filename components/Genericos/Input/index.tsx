@@ -46,21 +46,7 @@ export const Input: React.FC<InputProps> = ({
   style,
   ...props
 }) => {
-  // Se estiver na web e Chakra UI disponível, usar ChakraInput
-  if (Platform.OS === 'web' && ChakraInput) {
-    return (
-      <ChakraInput
-        as={as}
-        asChild={asChild}
-        colorPalette={colorPalette}
-        size={size}
-        variant={variant}
-        {...props}
-      />
-    );
-  }
-
-  // Fallback para React Native
+  // Usar sempre o TextInput do React Native para garantir compatibilidade
   const sizeStyle = sizes[size];
   
   return (
@@ -74,6 +60,8 @@ export const Input: React.FC<InputProps> = ({
           style,
         ]}
         placeholderTextColor="#999"
+        editable={true}
+        selectTextOnFocus={true}
         {...props}
       />
       {error && <Text style={styles.errorText}>{error}</Text>}

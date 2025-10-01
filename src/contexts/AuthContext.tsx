@@ -11,6 +11,7 @@ interface User {
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
+  loading: boolean;
   login: (email: string, password: string) => Promise<void>;
   register: (email: string, password: string, name?: string) => Promise<void>;
   logout: () => Promise<void>;
@@ -20,6 +21,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const isAuthenticated = !!user;
 
@@ -30,14 +32,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const { data, error } = await supabase.auth.getSession();
       if (error) {
         console.error('Error getting session:', error);
+        setLoading(false);
         return;
       }
       if (!mounted) return;
       const session = data.session;
       if (session?.user) {
         const u = session.user;
-        setUser({ id: u.id, email: u.email, name: u.user_metadata?.name ?? null, avatar: u.user_metadata?.avatar ?? null });
+        setUser({ id: u.id, email: u.email || null, name: u.user_metadata?.name || null, avatar: u.user_metadata?.avatar || null });
       }
+      setLoading(false);
     };
 
     getSession();
@@ -45,7 +49,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const { data: listener } = supabase.auth.onAuthStateChange((event: any, session: any) => {
       if (session?.user) {
         const u = session.user;
-        setUser({ id: u.id, email: u.email, name: u.user_metadata?.name ?? null, avatar: u.user_metadata?.avatar ?? null });
+        setUser({ id: u.id, email: u.email || null, name: u.user_metadata?.name || null, avatar: u.user_metadata?.avatar || null });
       } else {
         setUser(null);
       }
@@ -64,7 +68,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       throw error;
     }
     if (data.user) {
-      setUser({ id: data.user.id, email: data.user.email, name: data.user.user_metadata?.name ?? null, avatar: data.user.user_metadata?.avatar ?? null });
+      setUser({ id: data.user.id, email: data.user.email || null, name: data.user.user_metadata?.name || null, avatar: data.user.user_metadata?.avatar || null });
     }
   };
 
@@ -76,7 +80,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
     // user might be nil until email confirmation depending on Supabase settings
     if (data.user) {
-      setUser({ id: data.user.id, email: data.user.email, name: data.user.user_metadata?.name ?? name ?? null, avatar: data.user.user_metadata?.avatar ?? null });
+      setUser({ id: data.user.id, email: data.user.email || null, name: data.user.user_metadata?.name || name || null, avatar: data.user.user_metadata?.avatar || null });
     }
   };
 
@@ -88,6 +92,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const value: AuthContextType = {
     user,
     isAuthenticated,
+    loading,
     login,
     register,
     logout,

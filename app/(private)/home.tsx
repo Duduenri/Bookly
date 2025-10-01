@@ -1,10 +1,10 @@
 import { Book } from '@/components/Genericos/BookList';
-import HomeTemplate from '@/components/Genericos/HomeTemplate';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { useApi } from '@/src/services/api';
+import { useRouter } from 'expo-router';
 import React, { useCallback, useEffect, useState } from 'react';
 import { Alert } from 'react-native';
-import { useRouter } from 'expo-router';
+import { HomeTemplate } from '../../components/Genericos/HomeTemplate';
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -140,21 +140,7 @@ export default function HomeScreen() {
     router.push('/(private)/home');
   }, [router]);
 
-  // Mostrar loading ou erro
-  if (loading) {
-    return (
-      <HomeTemplate
-        books={[]}
-        stores={stores}
-        onBookPress={handleBookPress}
-        onFavoritePress={handleFavoritePress}
-        onWishlistPress={handleWishlistPress}
-        onAvatarPress={handleAvatarPress}
-        onTitlePress={handleTitlePress}
-      />
-    );
-  }
-
+  // Mostrar erro se houver
   if (error) {
     Alert.alert('Erro', error);
   }
@@ -163,6 +149,7 @@ export default function HomeScreen() {
     <HomeTemplate
       books={books}
       stores={stores}
+      loading={loading}
       onBookPress={handleBookPress}
       onFavoritePress={handleFavoritePress}
       onWishlistPress={handleWishlistPress}

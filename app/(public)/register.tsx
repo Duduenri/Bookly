@@ -77,35 +77,42 @@ export default function RegisterScreen() {
 				<Text style={styles.subtitle}>Bem-vindo ao Bookly — cadastre-se para continuar</Text>
 
 				<View style={styles.form}>
-					<Input
-						placeholder="Nome"
-						value={name}
-						onChange={(e: any) => setName(e.target?.value ?? e.nativeEvent?.text ?? (typeof e === 'string' ? e : ''))}
-						mb={3}
-					/>
+					<View style={{ marginBottom: 16 }}>
+						<Input
+							placeholder="Nome"
+							value={name}
+							onChangeText={setName}
+							autoCapitalize="words"
+						/>
+					</View>
 
-					<Input
-						placeholder="Email"
-						value={email}
-						onChange={(e: any) => setEmail(e.target?.value ?? e.nativeEvent?.text ?? (typeof e === 'string' ? e : ''))}
-						mb={3}
-					/>
+					<View style={{ marginBottom: 16 }}>
+						<Input
+							placeholder="Email"
+							value={email}
+							onChangeText={setEmail}
+							keyboardType="email-address"
+							autoCapitalize="none"
+						/>
+					</View>
 
-					<PasswordInput
-						placeholder="Senha"
-						value={password}
-						onChange={(e: any) => setPassword(e.target?.value ?? e.nativeEvent?.text ?? (typeof e === 'string' ? e : ''))}
-						mb={3}
-						visibilityIcon={{ on: <LuEye size={18} />, off: <LuEyeOff size={18} /> }}
-					/>
+					<View style={{ marginBottom: 16 }}>
+						<PasswordInput
+							placeholder="Senha"
+							value={password}
+							onChangeText={setPassword}
+							visibilityIcon={{ on: <LuEye size={18} />, off: <LuEyeOff size={18} /> }}
+						/>
+					</View>
 
-					<PasswordInput
-						placeholder="Confirmar senha"
-						value={confirmPassword}
-						onChange={(e: any) => setConfirmPassword(e.target?.value ?? e.nativeEvent?.text ?? (typeof e === 'string' ? e : ''))}
-						mb={6}
-						visibilityIcon={{ on: <LuEye size={18} />, off: <LuEyeOff size={18} /> }}
-					/>
+					<View style={{ marginBottom: 24 }}>
+						<PasswordInput
+							placeholder="Confirmar senha"
+							value={confirmPassword}
+							onChangeText={setConfirmPassword}
+							visibilityIcon={{ on: <LuEye size={18} />, off: <LuEyeOff size={18} /> }}
+						/>
+					</View>
 
 					<View style={styles.buttonContainer}>
 						<Button size="lg" variant="solid" onPress={handleRegister} loading={loading}>

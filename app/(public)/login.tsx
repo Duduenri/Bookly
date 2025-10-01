@@ -1,11 +1,11 @@
 import Button from '@/components/Genericos/Button';
-import Input, { PasswordInput } from '@/components/Genericos/Input';
+import { PasswordInput } from '@/components/Genericos/Input';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { useToast } from '@/src/hooks/useToast';
 import { router } from 'expo-router';
 import React, { useState } from 'react';
 import { LuEye, LuEyeOff } from 'react-icons/lu';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, TextInput, View } from 'react-native';
 
 export default function LoginScreen() {
   const { login } = useAuth();
@@ -13,6 +13,21 @@ export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+
+  // Função para debugar mudanças no email
+  const handleEmailChange = (text: string) => {
+    console.log('Email changed:', text);
+    setEmail(text);
+  };
+
+  // Função para debugar o foco no input
+  const handleEmailFocus = () => {
+    console.log('Email input focused');
+  };
+  
+  const handleEmailBlur = () => {
+    console.log('Email input blurred');
+  };
 
   const validate = () => {
     if (!email.trim()) {
@@ -64,20 +79,42 @@ export default function LoginScreen() {
 
         <View style={styles.form}>
 
-          <Input
-            placeholder="Email"
-            value={email}
-            onChange={(e: any) => setEmail(e.target?.value ?? e.nativeEvent?.text ?? (typeof e === 'string' ? e : ''))}
-            mb={3}
-          />
+          <View style={{ marginBottom: 16 }}>
+            <TextInput
+              placeholder="Digite seu email"
+              value={email}
+              onChangeText={handleEmailChange}
+              keyboardType="email-address"
+              autoCapitalize="none"
+              autoCorrect={false}
+              autoComplete="email"
+              textContentType="emailAddress"
+              editable={true}
+              selectTextOnFocus={true}
+              clearButtonMode="while-editing"
+              style={{ 
+                minHeight: 48,
+                paddingHorizontal: 16,
+                paddingVertical: 12,
+                fontSize: 16,
+                borderWidth: 2,
+                borderColor: '#e2e8f0',
+                borderRadius: 8,
+                backgroundColor: '#ffffff',
+                color: '#1a202c'
+              }}
+              placeholderTextColor="#a0aec0"
+            />
+          </View>
 
-          <PasswordInput
-            placeholder="Senha"
-            value={password}
-            onChange={(e: any) => setPassword(e.target?.value ?? e.nativeEvent?.text ?? (typeof e === 'string' ? e : ''))}
-            mb={6}
-            visibilityIcon={{ on: <LuEye size={18} />, off: <LuEyeOff size={18} /> }}
-          />
+          <View style={{ marginBottom: 24 }}>
+            <PasswordInput
+              placeholder="Senha"
+              value={password}
+              onChangeText={setPassword}
+              visibilityIcon={{ on: <LuEye size={18} />, off: <LuEyeOff size={18} /> }}
+            />
+          </View>
 
           <View style={styles.buttonContainer}>
             <Button size="lg" variant="solid" onPress={handleLogin} loading={loading}>
