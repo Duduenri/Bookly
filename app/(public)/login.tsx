@@ -1,18 +1,25 @@
 import Button from '@/components/Genericos/Button';
 import Input, { PasswordInput } from '@/components/Genericos/Input';
+import { useColorMode } from '@/src/components/ui/color-mode';
 import { useAuth } from '@/src/contexts/AuthContext';
 import { useToast } from '@/src/hooks/useToast';
 import { router } from 'expo-router';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { LuEye, LuEyeOff } from 'react-icons/lu';
 import { StyleSheet, Text, View } from 'react-native';
 
 export default function LoginScreen() {
   const { login } = useAuth();
   const toast = useToast();
+  const { setColorMode } = useColorMode();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+
+  // Garantir que a tela de login sempre use tema claro
+  useEffect(() => {
+    setColorMode('light');
+  }, [setColorMode]);
 
   const validate = () => {
     if (!email.trim()) {
@@ -57,10 +64,10 @@ export default function LoginScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: '#ffffff' }]}>
       <View style={styles.content}>
-        <Text style={styles.title}>Bookly</Text>
-        <Text style={styles.subtitle}>Sua plataforma de livros</Text>
+        <Text style={[styles.title, { color: '#1a202c' }]}>Bookly</Text>
+        <Text style={[styles.subtitle, { color: '#4a5568' }]}>Sua plataforma de livros</Text>
 
         <View style={styles.form}>
 
@@ -85,7 +92,7 @@ export default function LoginScreen() {
             </Button>
           </View>
            <View style={{ marginTop: 12 }}>
-              <Text style={styles.subtitle}>Ainda não possui conta? <Text style={styles.link} onPress={() => router.push('/(public)/register')}>Cadastre</Text></Text>
+              <Text style={[styles.subtitle, { color: '#4a5568' }]}>Ainda não possui conta? <Text style={[styles.link, { color: '#3182ce' }]} onPress={() => router.push('/(public)/register')}>Cadastre</Text></Text>
            </View>
         </View>
       </View>
@@ -96,7 +103,7 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#ffffff',
   },
   content: {
     flex: 1,
@@ -107,12 +114,12 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 36,
     fontWeight: 'bold',
-    color: '#2D3748',
+    color: '#1a202c',
     marginBottom: 10,
   },
   subtitle: {
     fontSize: 18,
-    color: '#718096',
+    color: '#4a5568',
     marginBottom: 20,
     textAlign: 'center',
   },
@@ -126,5 +133,6 @@ const styles = StyleSheet.create({
   link: {
     color: '#3182ce',
     textDecorationLine: 'underline',
+    fontWeight: '600',
   },
 });
